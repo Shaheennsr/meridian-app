@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { href: "/performance", icon: "chart", label: "Performance" },
   { href: "/study-plan", icon: "calendar", label: "Study Plan" },
   { href: "/courses", icon: "play", label: "Courses & Videos" },
+  { href: "/community", icon: "chat", label: "Community" },
   { href: "/account", icon: "user", label: "My Account" },
 ] as const;
 
@@ -45,7 +46,7 @@ export function Sidebar({
   );
 }
 
-type IconName = "grid" | "book" | "chart" | "calendar" | "play" | "user";
+type IconName = "grid" | "book" | "chart" | "calendar" | "play" | "user" | "chat";
 
 function NavItem({
   href,
@@ -111,6 +112,12 @@ function NavIcon({ icon }: { icon: IconName }) {
       );
     case "play":
       return <polygon points="6 4 20 12 6 20 6 4" />;
+    case "chat":
+      return (
+        <>
+          <path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4 4v-4H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" />
+        </>
+      );
     case "user":
       return (
         <>

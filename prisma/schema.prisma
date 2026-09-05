@@ -15,6 +15,50 @@ model User {
   examDate     String?
   createdAt    DateTime  @default(now())
   attempts     Attempt[]
+
+  sentFriendRequests     FriendRequest[] @relation("SentFriendRequests")
+  receivedFriendRequests FriendRequest[] @relation("ReceivedFriendRequests")
+  friendshipsA           Friendship[]    @relation("FriendshipsA")
+  friendshipsB           Friendship[]    @relation("FriendshipsB")
+  sentMessages           Message[]       @relation("SentMessages")
+  receivedMessages       Message[]       @relation("ReceivedMessages")
+}
+
+model FriendRequest {
+  id         String   @id @default(cuid())
+  senderId   String
+  sender     User     @relation("SentFriendRequests", fields: [senderId], references: [id])
+  receiverId String
+  receiver   User     @relation("ReceivedFriendRequests", fields: [receiverId], references: [id])
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+
+  @@unique([senderId, receiverId])
+  @@index([receiverId])
+}
+
+model Friendship {
+  id        String   @id @default(cuid())
+  userAId   String
+  userA     User     @relation("FriendshipsA", fields: [userAId], references: [id])
+  userBId   String
+  userB     User     @relation("FriendshipsB", fields: [userBId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userAId, userBId])
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  senderId   String
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiverId String
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  body       String
+  createdAt  DateTime @default(now())
+
+  @@index([senderId, receiverId])
+  @@index([receiverId, senderId])
 }
 
 model Question {
