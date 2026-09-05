@@ -4,9 +4,22 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
-const BLOCK_SIZE = 10;
+export async function latestResponseStatus(userId: string) {
+  const responses = await prisma.response.findMany({
+    where: { attempt: { userId } },
+    select: { questionId: true, correct: true, answeredAt: true },
+  });
+  const latestByQuestion = new Map<string, { correct: boolean; answeredAt: Date }>();
+  for (const r of responses) {
+    const existing = latestByQuestion.get(r.questionId);
+    if (!existing || r.answeredAt > existing.answeredAt) {
+      latestByQuestion.set(r.questionId, { correct: r.correct, answeredAt: r.answeredAt });
+    }
+  }
+  return latestByQuestion;
+}
 
-export async function startBlock() {
+export async function startBlock(formData: FormData) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
   const userId = session.user.id;
@@ -17,9 +30,32 @@ export async function startBlock() {
   });
   if (inProgress) redirect(`/blocks/${inProgress.id}`);
 
-  const allQuestions = await prisma.question.findMany({ select: { id: true } });
-  const shuffled = allQuestions.map((q) => q.id).sort(() => Math.random() - 0.5);
-  const questionIds = shuffled.slice(0, BLOCK_SIZE);
+  const categories = formData.getAll("categories").map(String);
+  const count = Number(formData.get("count")) || 10;
+  const status = String(formData.get("status") ?? "all");
+
+  const pool = await prisma.question.findMany({
+    where: categories.length > 0 ? { category: { in: categories } } : undefined,
+    select: { id: true },
+  });
+
+  let candidateIds = pool.map((q) => q.id);
+
+  if (status === "unused" || status === "incorrect") {
+    const latestByQuestion = await latestResponseStatus(userId);
+    if (status === "unused") {
+      candidateIds = candidateIds.filter((id) => !latestByQuestion.has(id));
+    } else {
+      candidateIds = candidateIds.filter((id) => latestByQuestion.get(id)?.correct === false);
+    }
+  }
+
+  if (candidateIds.length === 0) {
+    redirect("/blocks/new?error=empty");
+  }
+
+  const shuffled = candidateIds.sort(() => Math.random() - 0.5);
+  const questionIds = shuffled.slice(0, Math.min(count, shuffled.length));
 
   const attempt = await prisma.attempt.create({
     data: { userId, questionIds },
@@ -35,6 +71,7 @@ export async function submitAnswer(formData: FormData) {
 
   const attemptId = formData.get("attemptId") as string;
   const questionId = formData.get("questionId") as string;
+  const questionIndex = formData.get("questionIndex") as string;
   const selectedIndex = Number(formData.get("selectedIndex"));
 
   if (!attemptId || !questionId || Number.isNaN(selectedIndex)) {
@@ -65,8 +102,7 @@ export async function submitAnswer(formData: FormData) {
       where: { id: attemptId },
       data: { completedAt: new Date() },
     });
-    redirect(`/blocks/${attemptId}/results`);
   }
 
-  redirect(`/blocks/${attemptId}`);
+  redirect(`/blocks/${attemptId}?q=${questionIndex}`);
 }

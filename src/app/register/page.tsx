@@ -55,19 +55,18 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex flex-1 items-center justify-center bg-slate-50 px-4 py-12">
+    <div className="flex flex-1 items-center justify-center bg-navy-50 px-4 py-12">
       <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-8 shadow-sm">
-        <div className="flex items-center gap-2 mb-6">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-teal-600 text-white font-bold text-sm">
-            M
-          </div>
-          <div>
-            <div className="text-sm font-semibold text-slate-900 leading-tight">Meridian</div>
-            <div className="text-[10px] uppercase tracking-wide text-slate-500 leading-tight">Board Review</div>
-          </div>
-        </div>
+        <Link href="/" className="mb-6 flex items-center gap-2.5">
+          <svg width="30" height="30" viewBox="0 0 36 36" fill="none">
+            <rect width="36" height="36" rx="9" className="fill-teal-500" />
+            <rect x="11" y="18" width="5" height="10" rx="1.5" fill="white" />
+            <rect x="20" y="11" width="5" height="17" rx="1.5" fill="white" />
+          </svg>
+          <span className="text-[15px] font-semibold text-slate-900">Meridian</span>
+        </Link>
 
-        <h1 className="text-lg font-semibold text-slate-900">Create your account</h1>
+        <h1 className="font-serif text-xl font-semibold text-slate-900">Create your account</h1>
         <p className="mt-1 text-sm text-slate-500">Start your first block in under a minute.</p>
 
         <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
@@ -115,13 +114,13 @@ export default function RegisterPage() {
           </div>
 
           {error && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{error}</p>
+            <p className="text-sm text-rose-600 bg-rose-50 border border-rose-200 rounded-lg px-3 py-2">{error}</p>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="mt-2 w-full rounded-lg bg-slate-900 hover:bg-slate-800 disabled:opacity-60 px-4 py-2.5 text-sm font-semibold text-white transition-colors"
+            className="mt-2 w-full rounded-md bg-navy-700 hover:bg-navy-600 disabled:opacity-60 px-4 py-2.5 text-sm font-semibold text-white transition-colors"
           >
             {loading ? "Creating account..." : "Create Account"}
           </button>

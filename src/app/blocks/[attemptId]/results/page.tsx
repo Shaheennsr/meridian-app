@@ -32,28 +32,23 @@ export default async function ResultsPage({
   const letters = ["A", "B", "C", "D", "E"];
 
   return (
-    <div className="flex flex-1 flex-col bg-slate-50">
-      <header className="flex items-center justify-between bg-slate-900 px-8 py-4">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-teal-600 text-white font-bold text-sm">
-            M
-          </div>
-          <div>
-            <div className="text-sm font-semibold text-white leading-tight">Meridian</div>
-            <div className="text-[10px] uppercase tracking-wide text-slate-400 leading-tight">Board Review</div>
-          </div>
+    <div className="flex flex-1 flex-col bg-navy-50">
+      <header className="flex h-[68px] flex-shrink-0 items-center justify-between border-b border-slate-200 bg-navy-700 px-8 text-white">
+        <div className="flex items-center gap-2.5">
+          <Logo />
+          <span className="text-[15px] font-semibold">Meridian</span>
         </div>
-        <Link href="/dashboard" className="text-sm font-medium text-slate-300 hover:text-white">
-          Dashboard
+        <Link href="/dashboard" className="text-sm font-medium text-white/70 hover:text-white">
+          ← Dashboard
         </Link>
       </header>
 
       <main className="flex-1 px-6 py-10">
         <div className="mx-auto max-w-2xl">
-          <div className="rounded-xl border border-slate-200 bg-white p-6 text-center">
-            <div className="text-xs font-medium uppercase tracking-wide text-slate-500">Block Score</div>
-            <div className="mt-2 text-4xl font-bold text-slate-900">{percent}%</div>
-            <div className="mt-1 text-sm text-slate-500">
+          <div className="rounded-xl border border-slate-200 bg-white p-8 text-center">
+            <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">Block Score</div>
+            <div className="mt-2 font-serif text-5xl font-semibold text-slate-900">{percent}%</div>
+            <div className="mt-1.5 text-sm text-slate-500">
               {correctCount} of {total} correct
             </div>
           </div>
@@ -64,19 +59,21 @@ export default async function ResultsPage({
               return (
                 <div key={response.id} className="rounded-xl border border-slate-200 bg-white p-6">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium uppercase tracking-wide text-slate-500">
-                      Question {i + 1} · {response.question.category}
+                    <span className="text-xs font-semibold uppercase tracking-wide text-teal-600">
+                      Question {i + 1} &middot; {response.question.category}
                     </span>
                     <span
                       className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                        response.correct ? "bg-teal-100 text-teal-800" : "bg-red-100 text-red-700"
+                        response.correct ? "bg-teal-100 text-teal-800" : "bg-rose-100 text-rose-700"
                       }`}
                     >
                       {response.correct ? "Correct" : "Incorrect"}
                     </span>
                   </div>
 
-                  <p className="mt-3 text-sm leading-relaxed text-slate-900">{response.question.stem}</p>
+                  <p className="mt-3 font-serif text-[15px] leading-relaxed text-slate-900">
+                    {response.question.stem}
+                  </p>
 
                   <div className="mt-4 flex flex-col gap-1.5">
                     {choices.map((choice, ci) => {
@@ -89,7 +86,7 @@ export default async function ResultsPage({
                             isCorrect
                               ? "border-teal-300 bg-teal-50 text-teal-900"
                               : isSelected
-                              ? "border-red-300 bg-red-50 text-red-900"
+                              ? "border-rose-300 bg-rose-50 text-rose-900"
                               : "border-slate-200 text-slate-600"
                           }`}
                         >
@@ -102,8 +99,8 @@ export default async function ResultsPage({
                     })}
                   </div>
 
-                  <p className="mt-4 rounded-lg bg-slate-50 p-3 text-sm text-slate-600">
-                    <span className="font-semibold text-slate-800">Explanation: </span>
+                  <p className="mt-4 rounded-lg bg-navy-50 p-3.5 text-sm leading-relaxed text-slate-600">
+                    <span className="font-semibold text-slate-800">Tutor Mode Explanation: </span>
                     {response.question.explanation}
                   </p>
                 </div>
@@ -111,10 +108,16 @@ export default async function ResultsPage({
             })}
           </div>
 
-          <div className="mt-8 flex justify-center">
+          <div className="mt-8 flex justify-center gap-3">
+            <Link
+              href="/blocks/new"
+              className="rounded-md border border-slate-300 px-6 py-2.5 text-sm font-semibold text-slate-800 transition-colors hover:bg-white"
+            >
+              Start Another Block
+            </Link>
             <Link
               href="/dashboard"
-              className="rounded-lg bg-slate-900 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+              className="rounded-md bg-navy-700 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-navy-600"
             >
               Back to Dashboard
             </Link>
@@ -122,5 +125,15 @@ export default async function ResultsPage({
         </div>
       </main>
     </div>
+  );
+}
+
+function Logo() {
+  return (
+    <svg width="26" height="26" viewBox="0 0 36 36" fill="none">
+      <rect width="36" height="36" rx="9" className="fill-teal-500" />
+      <rect x="11" y="18" width="5" height="10" rx="1.5" fill="white" />
+      <rect x="20" y="11" width="5" height="17" rx="1.5" fill="white" />
+    </svg>
   );
 }
