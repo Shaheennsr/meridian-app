@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { SignOutButton } from "@/components/sign-out-button";
+import { Sidebar } from "@/components/sidebar";
 import Link from "next/link";
 
 export default async function DashboardPage() {
@@ -61,30 +61,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex h-screen flex-1 overflow-hidden bg-navy-50">
-      {/* Sidebar */}
-      <aside className="flex w-[220px] flex-shrink-0 flex-col bg-navy-700 px-4 py-5 text-white">
-        <div className="mb-9 flex items-center gap-2.5 px-2">
-          <svg width="30" height="30" viewBox="0 0 36 36" fill="none">
-            <rect width="36" height="36" rx="9" className="fill-teal-500" />
-            <rect x="11" y="18" width="5" height="10" rx="1.5" fill="white" />
-            <rect x="20" y="11" width="5" height="17" rx="1.5" fill="white" />
-          </svg>
-          <span className="text-[15px] font-semibold">Meridian</span>
-        </div>
-
-        <nav className="flex flex-col gap-1">
-          <NavItem href="/dashboard" active icon="grid" label="Dashboard" />
-          <NavItem href="/blocks/new" icon="book" label="Question Bank" />
-        </nav>
-
-        <div className="mt-auto flex flex-col gap-2">
-          <div className="rounded-lg bg-white/[0.06] p-3.5">
-            <div className="mb-1 text-xs font-semibold">{user.name}</div>
-            <div className="text-[11px] text-white/60">{user.email}</div>
-          </div>
-          <SignOutButton />
-        </div>
-      </aside>
+      <Sidebar activeHref="/dashboard" user={user} />
 
       {/* Main content */}
       <div className="flex flex-1 flex-col overflow-hidden">
@@ -290,43 +267,5 @@ function ProgressRing({ percent }: { percent: number }) {
         transform="rotate(-90 44 44)"
       />
     </svg>
-  );
-}
-
-function NavItem({
-  href,
-  icon,
-  label,
-  active,
-}: {
-  href: string;
-  icon: "grid" | "book";
-  label: string;
-  active?: boolean;
-}) {
-  return (
-    <Link
-      href={href}
-      className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13.5px] transition-colors ${
-        active ? "bg-white/10 font-semibold text-white" : "text-white/70 hover:bg-white/5 hover:text-white"
-      }`}
-    >
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-        {icon === "grid" ? (
-          <>
-            <rect x="3" y="3" width="7" height="9" rx="1.5" />
-            <rect x="14" y="3" width="7" height="5" rx="1.5" />
-            <rect x="14" y="12" width="7" height="9" rx="1.5" />
-            <rect x="3" y="16" width="7" height="5" rx="1.5" />
-          </>
-        ) : (
-          <>
-            <rect x="5" y="4" width="14" height="16" rx="1.5" />
-            <line x1="9" y1="4" x2="9" y2="20" />
-          </>
-        )}
-      </svg>
-      <span>{label}</span>
-    </Link>
   );
 }
