@@ -3,15 +3,52 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   name         String
-  email        String   @unique
+  email        String    @unique
   passwordHash String
   examDate     String?
-  createdAt    DateTime @default(now())
+  createdAt    DateTime  @default(now())
+  attempts     Attempt[]
+}
+
+model Question {
+  id           String     @id @default(cuid())
+  category     String
+  stem         String
+  choices      Json
+  correctIndex Int
+  explanation  String
+  createdAt    DateTime   @default(now())
+  responses    Response[]
+}
+
+model Attempt {
+  id          String     @id @default(cuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id])
+  questionIds Json
+  startedAt   DateTime   @default(now())
+  completedAt DateTime?
+  responses   Response[]
+
+  @@index([userId])
+}
+
+model Response {
+  id            String   @id @default(cuid())
+  attemptId     String
+  attempt       Attempt  @relation(fields: [attemptId], references: [id])
+  questionId    String
+  question      Question @relation(fields: [questionId], references: [id])
+  selectedIndex Int
+  correct       Boolean
+  answeredAt    DateTime @default(now())
+
+  @@unique([attemptId, questionId])
 }

@@ -39,7 +39,7 @@ export default async function Home() {
           Master Step 2 CK with confidence.
         </h1>
         <p className="mt-4 max-w-md text-slate-600">
-          12,400 board-style questions, adaptive blocks, and tutor-mode explanations that adapt to how you study.
+          Board-style questions across 13 specialties, randomized 10-question blocks, and tutor-mode explanations after every answer.
         </p>
         <div className="mt-8 flex gap-3">
           <Link
