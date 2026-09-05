@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { Sidebar } from "@/components/sidebar";
+import { ProgressRing } from "@/components/progress-ring";
 import Link from "next/link";
 
 export default async function DashboardPage() {
@@ -246,26 +247,3 @@ function StatCard({ label, value, sub }: { label: string; value: string; sub: st
   );
 }
 
-function ProgressRing({ percent }: { percent: number }) {
-  const r = 37;
-  const c = 2 * Math.PI * r;
-  const offset = c - (percent / 100) * c;
-  return (
-    <svg width="88" height="88" viewBox="0 0 88 88" className="flex-shrink-0">
-      <circle cx="44" cy="44" r={r} fill="none" stroke="#eef0f4" strokeWidth="9" />
-      <circle
-        cx="44"
-        cy="44"
-        r={r}
-        fill="none"
-        stroke="currentColor"
-        className="text-teal-500"
-        strokeWidth="9"
-        strokeLinecap="round"
-        strokeDasharray={c}
-        strokeDashoffset={offset}
-        transform="rotate(-90 44 44)"
-      />
-    </svg>
-  );
-}
